@@ -135,6 +135,16 @@ if(!isset($default['de_naverpay_mid'])) {
                     ADD `de_naverpay_sendcost` varchar(255) NOT NULL DEFAULT '' AFTER `de_naverpay_mb_id`", true);
 }
 
+// paypal 필드추가
+if(!isset($default['de_paypal_use'])) {
+    sql_query(" ALTER TABLE `{$g5['g5_shop_default_table']}`
+                    ADD `de_paypal_exchange_rate` varchar(255) NOT NULL DEFAULT '' AFTER `de_naverpay_sendcost`,
+                    ADD `de_paypal_api_password` varchar(255) NOT NULL DEFAULT '' AFTER `de_paypal_exchange_rate`,
+                    ADD `de_paypal_api_username` varchar(255) NOT NULL DEFAULT '' AFTER `de_paypal_api_password`,
+                    ADD `de_paypal_use` tinyint(4) NOT NULL DEFAULT '0' AFTER `de_paypal_api_username` ", true);
+}
+
+
 // 유형별상품리스트 설정필드 추가
 if(!isset($default['de_listtype_list_skin'])) {
     sql_query(" ALTER TABLE `{$g5['g5_shop_default_table']}`
@@ -912,6 +922,36 @@ if(!isset($default['de_listtype_list_skin'])) {
                  <?php echo help("복합과세(과세, 비과세) 결제를 사용하려면 체크하십시오.\n복합과세 결제를 사용하기 전 PG사에 별도로 결제 신청을 해주셔야 합니다. 사용시 PG사로 문의하여 주시기 바랍니다."); ?>
                 <input type="checkbox" name="de_tax_flag_use" value="1" id="de_tax_flag_use"<?php echo $default['de_tax_flag_use']?' checked':''; ?>> 사용
             </td>
+        </tr>
+		<tr>
+			<th style="background: #b4e9ff;" scope="row"><label for="de_paypal_use">페이팔 결제 사용</label></th>
+			<td>
+				<input type="checkbox" name="de_paypal_use" value="1" id="de_paypal_use"<?php echo $default['de_paypal_use']?' checked':''; ?>> 사용
+			</td>
+		</tr>
+		<tr>
+            <th style="background: #b4e9ff;" scope="row">
+                <label for="de_paypal_api_username">페이팔 API client id</label>
+            </th>
+            <td>
+                <input type="text" name="de_paypal_api_username" value="<?php echo $default['de_paypal_api_username']; ?>" id="de_paypal_api_username" class="frm_input" size="50" maxlength="100">
+             </td>
+        </tr>
+		<tr>
+            <th style="background: #b4e9ff;" scope="row">
+                <label for="de_paypal_api_password">페이팔 API secret</label>
+            </th>
+            <td>
+                <input type="text" name="de_paypal_api_password" value="<?php echo $default['de_paypal_api_password']; ?>" id="de_paypal_api_password" class="frm_input" size="50" maxlength="100">
+             </td>
+        </tr>
+		<tr>
+            <th style="background: #b4e9ff;" scope="row">
+                <label for="de_paypal_exchange_rate">페이팔 적용 환율</label>
+            </th>
+            <td>
+                <input type="text" name="de_paypal_exchange_rate" value="<?php echo $default['de_paypal_exchange_rate']; ?>" id="de_paypal_exchange_rate" class="frm_input" size="50" maxlength="100">
+             </td>
         </tr>
         </tbody>
         </table>

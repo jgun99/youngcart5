@@ -10,7 +10,15 @@ require_once(G5_SHOP_PATH.'/'.$default['de_pg_service'].'/orderform.1.php');
 if($is_kakaopay_use) {
     require_once(G5_SHOP_PATH.'/kakaopay/orderform.1.php');
 }
+
+if($default['de_paypal_use']) {
+    require_once(G5_SHOP_PATH.'/paypal/orderform.1.php');
+}
+
+
 ?>
+
+
 
 <form name="forderform" id="forderform" method="post" action="<?php echo $order_action_url; ?>" autocomplete="off">
 <div id="sod_frm">
@@ -249,6 +257,7 @@ if($is_kakaopay_use) {
     <input type="hidden" name="od_coupon" value="0">
     <input type="hidden" name="od_send_coupon" value="0">
 
+	
     <?php
     // 결제대행사별 코드 include (결제대행사 정보 필드)
     require_once(G5_SHOP_PATH.'/'.$default['de_pg_service'].'/orderform.2.php');
@@ -256,6 +265,11 @@ if($is_kakaopay_use) {
     if($is_kakaopay_use) {
         require_once(G5_SHOP_PATH.'/kakaopay/orderform.2.php');
     }
+	
+	if($default['de_paypal_use']) {
+		require_once(G5_SHOP_PATH.'/paypal/orderform.2.php');
+	}
+	
     ?>
 
     <!-- 주문하시는 분 입력 시작 { -->
@@ -556,6 +570,15 @@ if($is_kakaopay_use) {
             $checked = '';
         }
 
+		// 페이팔 사용
+		if ($default['de_paypal_use']) {
+			echo '<input type="radio" id="od_settle_paypal" name="od_settle_case" value="PAYPAL" '.$checked.'> <label for="od_settle_paypal">PayPal</label>'.PHP_EOL;
+			
+			//<div id="display_pay_button" class="btn_confirm" style="">
+		// <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" alt="PayPal - The safer, easier way to pay online" align="center" style="margin-right:7px;">
+	// </div>
+		}
+		
         // 가상계좌 사용
         if ($default['de_vbank_use']) {
             $multi_settle++;
@@ -674,7 +697,13 @@ if($is_kakaopay_use) {
     if($is_kakaopay_use) {
         require_once(G5_SHOP_PATH.'/kakaopay/orderform.3.php');
     }
+	
+	if($default['de_paypal_use']) {
+		require_once(G5_SHOP_PATH.'/paypal/orderform.3.php');
+	}
     ?>
+	
+	
     </form>
 
     <?php
@@ -927,7 +956,7 @@ $(function() {
         $("#settle_bank").show();
     });
 
-    $("#od_settle_iche,#od_settle_card,#od_settle_vbank,#od_settle_hp,#od_settle_easy_pay,#od_settle_kakaopay").bind("click", function() {
+    $("#od_settle_iche,#od_settle_card,#od_settle_vbank,#od_settle_hp,#od_settle_easy_pay,#od_settle_kakaopay,#od_settle_paypal").bind("click", function() {
         $("#settle_bank").hide();
     });
 
@@ -1308,6 +1337,26 @@ function forderform_check(f)
         getTxnId(f);
         return false;
     }
+	
+	if (settle_method == "PAYPAL") {
+		// var order_data = $(f).serialize();
+		// $.ajax({
+		// 		type: "POST",
+		// 		data: order_data,
+		// 		url: g5_url+"/shop/orderformupdate.php",
+		// 		cache: false,
+		// 		async: false,
+		// 		success: function(data) {
+		// 			save_result = data;
+		// 			alert(data);
+		// 		}
+		// });
+			// f.action = g5_url+"/shop/paypal/process.php";//g5_url+"/shop/paypal/process.php"
+		
+		// f.submit();		
+		// return false;
+	 }
+	
 
     // pay_method 설정
     <?php if($default['de_pg_service'] == 'kcp') { ?>
@@ -1486,6 +1535,8 @@ function forderform_check(f)
         f.submit();
     }
     <?php } ?>
+	
+	
 }
 
 // 구매자 정보와 동일합니다.

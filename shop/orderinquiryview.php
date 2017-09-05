@@ -259,14 +259,21 @@ if($od['od_pg'] == 'lg') {
         }
 
         // 결제정보처리
-        if($od['od_receipt_price'] > 0)
-            $od_receipt_price = display_price($od['od_receipt_price']);
+        if($od['od_receipt_price'] > 0) {
+			
+			if($od['od_settle_case'] == 'PAYPAL') {
+				$od_receipt_price = 'USD '. $od['od_receipt_price'] / 100;
+			} else {
+				$od_receipt_price = display_price($od['od_receipt_price']);	
+			}
+		}
         else
             $od_receipt_price = '아직 입금되지 않았거나 입금정보를 입력하지 못하였습니다.';
 
         $app_no_subj = '';
         $disp_bank = true;
         $disp_receipt = false;
+		$disp_app_time = true;
         if($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == 'KAKAOPAY') {
             $app_no_subj = '승인번호';
             $app_no = $od['od_app_no'];
@@ -297,7 +304,13 @@ if($od['od_pg'] == 'lg') {
         } else if($od['od_settle_case'] == '가상계좌' || $od['od_settle_case'] == '계좌이체') {
             $app_no_subj = '거래번호';
             $app_no = $od['od_tno'];
-        }
+        } else if($od['od_settle_case'] == 'PAYPAL') {
+			$app_no_subj = '승인번호';
+            $app_no = $od['od_app_no'];
+            $disp_bank = false;
+            $disp_receipt = false;
+			$disp_app_time = false;
+		}
         ?>
 
         <section id="sod_fin_pay">
@@ -327,7 +340,7 @@ if($od['od_pg'] == 'lg') {
                     <td><?php echo $od_receipt_price; ?></td>
                 </tr>
                 <?php
-                if($od['od_receipt_price'] > 0)
+                if($od['od_receipt_price'] > 0 && $disp_app_time)
                 {
                 ?>
                 <tr>

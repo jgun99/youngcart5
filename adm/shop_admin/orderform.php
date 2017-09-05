@@ -347,7 +347,11 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <td class="td_numbig td_numsum"><?php echo display_price($amount['order']); ?></td>
             <td class="td_numbig"><?php echo display_price($od['od_send_cost'] + $od['od_send_cost2']); ?></td>
             <td class="td_numbig"><?php echo display_point($od['od_receipt_point']); ?></td>
-            <td class="td_numbig td_numincome"><?php echo number_format($amount['receipt']); ?>원</td>
+            <?php if ($od['od_settle_case'] == 'PAYPAL') { ?>
+			<td class="td_numbig td_numincome">USD <?php echo number_format($amount['receipt']) / 100; ?></td>
+			<?php } else {?>
+			<td class="td_numbig td_numincome"><?php echo number_format($amount['receipt']); ?></td>
+			<?php }?>
             <td class="td_numbig td_numcoupon"><?php echo display_price($amount['coupon']); ?></td>
             <td class="td_numbig td_numcancel"><?php echo number_format($amount['cancel']); ?>원</td>
         </tr>
@@ -510,6 +514,10 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                                     $pg_url  = 'https://mms.cnspay.co.kr';
                                     $pg_test = 'KAKAOPAY';
                                     break;
+								case 'PAYPAL':
+									$pg_url  = 'https://www.paypal.com';
+									$pg_test = 'PAYPAL';
+									break;
                                 default:
                                     $pg_url  = 'http://admin8.kcp.co.kr';
                                     $pg_test = 'KCP';
@@ -759,6 +767,17 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 </tr>
                 <?php } ?>
 
+					<?php if ($od['od_settle_case'] == 'PAYPAL') { ?>
+                <tr>
+                    <th scope="row" class="sodr_sppay"><label for="od_receipt_price">PAYPAL 결제금액</label></th>
+                    <td>
+                        <?php echo $html_receipt_chk; ?>
+                        USD <input type="text" name="od_receipt_price" id="od_receipt_price" value="<?php echo $od['od_receipt_price']/100; ?>" class="frm_input" size="10">
+                    </td>
+                </tr>
+                <?php } ?>
+
+					
                 <?php if ($od['od_settle_case'] == '간편결제' || ($od['od_pg'] == 'inicis' && $od['od_settle_case'] == '삼성페이')) { ?>
                 <tr>
                     <th scope="row" class="sodr_sppay"><label for="od_receipt_price"><?php echo $s_receipt_way; ?> 결제금액</label></th>

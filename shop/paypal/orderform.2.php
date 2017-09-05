@@ -27,6 +27,10 @@ if($default['de_paypal_use']) {
 <?php } ?>
 </div>
 
+
+
+
+
 <?php
 }
 ?>

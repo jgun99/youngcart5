@@ -573,10 +573,7 @@ if($default['de_paypal_use']) {
 		// 페이팔 사용
 		if ($default['de_paypal_use']) {
 			echo '<input type="radio" id="od_settle_paypal" name="od_settle_case" value="PAYPAL" '.$checked.'> <label for="od_settle_paypal">PayPal</label>'.PHP_EOL;
-			
-			//<div id="display_pay_button" class="btn_confirm" style="">
-		// <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" alt="PayPal - The safer, easier way to pay online" align="center" style="margin-right:7px;">
-	// </div>
+			$checked = '';
 		}
 		
         // 가상계좌 사용
@@ -1339,22 +1336,34 @@ function forderform_check(f)
     }
 	
 	if (settle_method == "PAYPAL") {
-		// var order_data = $(f).serialize();
-		// $.ajax({
-		// 		type: "POST",
-		// 		data: order_data,
-		// 		url: g5_url+"/shop/orderformupdate.php",
-		// 		cache: false,
-		// 		async: false,
-		// 		success: function(data) {
-		// 			save_result = data;
-		// 			alert(data);
-		// 		}
-		// });
-			// f.action = g5_url+"/shop/paypal/process.php";//g5_url+"/shop/paypal/process.php"
+		<?php if($default['de_tax_flag_use']) { ?>
+        f.SupplyAmt.value = parseInt(f.comm_tax_mny.value) + parseInt(f.comm_free_mny.value);
+        f.GoodsVat.value  = parseInt(f.comm_vat_mny.value);
+        <?php } ?>
+
+		var order_data = $(f).serialize();
+		var save_result = "";
 		
-		// f.submit();		
-		// return false;
+		$.ajax({
+            type: "POST",
+            data: order_data,
+            url: g5_url+"/shop/ajax.orderdatasave.php",
+            cache: false,
+            async: false,
+            success: function(data) {
+                save_result = data;
+            }
+        });
+		
+		if(save_result) {
+			alert(save_result);
+			console.log(save_result);
+		}
+		
+		f.action = g5_url+"/shop/paypal/process.php";//g5_url+"/shop/paypal/process.php"
+		f.submit();	
+		
+		return false;
 	 }
 	
 

@@ -7,7 +7,6 @@ require $composerAutoload;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
 
-
 // $clientId = $default['de_paypal_api_username'];
 // $clientSecret = $default['de_paypal_api_password'];
 

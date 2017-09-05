@@ -419,6 +419,19 @@ else if ($od_settle_case == "KAKAOPAY")
     if($od_misu == 0)
         $od_status      = '입금';
 }
+else if ($od_settle_case == "PAYPAL")
+{
+	include G5_SHOP_PATH.'/paypal/paypal_result.php';
+	
+	$od_tno             = $tno;
+    $od_app_no          = $app_no;
+    $od_receipt_price   = $amount;
+    $od_receipt_point   = $i_temp_point;
+    $od_receipt_time    = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})/", "\\1-\\2-\\3 \\4:\\5:\\6", $app_time);
+    $od_bank_account    = 'PAYPAL';
+    $pg_price           = $order_price;
+	
+}
 else
 {
     die("od_settle_case Error!!!");
@@ -427,7 +440,8 @@ else
 $od_pg = $default['de_pg_service'];
 if($od_settle_case == 'KAKAOPAY')
     $od_pg = 'KAKAOPAY';
-
+if($od_settle_case == 'PAYPAL')
+	$od_pg = 'PAYPAL';
 // 주문금액과 결제금액이 일치하는지 체크
 if($tno) {
     if((int)$order_price !== (int)$pg_price) {
